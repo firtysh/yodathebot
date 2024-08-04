@@ -68,7 +68,7 @@ const download = async ({ m, arg }) => {
 
   const info = await getVideoInfo(videoCode);
   if(info instanceof Error) return m.reply("Can not download this one")
-  if(info.filesize > 30,971,520) return m.reply("Filesize too big")
+  // if(info.filesize > 30,971,520) return m.reply("Filesize too big")
   const ytDlpProcess = spawn(ytDlpBinaryPath, [
     "-f",
     "bestaudio",
@@ -81,10 +81,10 @@ const download = async ({ m, arg }) => {
   ]);
 
   await m.reply("Please wait your request is being processed")
-  const logFileStream = fs.createWriteStream(
-    path.resolve(__dirname, `../logs/ytdlp/${videoCode}.txt`),
-    { flags: "a" }
-  );
+  // const logFileStream = fs.createWriteStream(
+  //   path.resolve(__dirname, `../logs/ytdlp/${videoCode}.txt`),
+  //   { flags: "a" }
+  // );
 
   const chunks = [];
 
@@ -94,9 +94,9 @@ const download = async ({ m, arg }) => {
   });
 
   // Handle errors from yt-dlp
-  ytDlpProcess.stderr.on("data", (data) => {
-    logFileStream.write(data);
-  });
+  // ytDlpProcess.stderr.on("data", (data) => {
+    // logFileStream.write(data);
+  // });
 
   // Handle yt-dlp process close
   ytDlpProcess.on("close", async (code) => {
