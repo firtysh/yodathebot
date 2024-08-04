@@ -64,10 +64,11 @@ const download = async ({ m, arg }) => {
   const argFragments = arg.split(/\s+/);
 
   const videoCode = validateAndCleanYouTubeUrl(argFragments[0]);
+  if (!videoCode) return await m.reply("Please provide a valid url");
 
   const info = await getVideoInfo(videoCode);
-
-  if (!videoCode) return await m.reply("Please provide a valid url");
+  if(info instanceof Error) return m.reply("Can not download this one")
+  if(info.filesize > 30,971,520) return m.reply("Filesize too big")
   const ytDlpProcess = spawn(ytDlpBinaryPath, [
     "-f",
     "bestaudio",
