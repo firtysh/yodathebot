@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGODB_URI).then(async () => {
         dataPath: "auth"
     }),
     puppeteer:{
-      executablePath : '/usr/bin/google-chrome-stable',
+      // executablePath : '/usr/bin/google-chrome-stable',
       headless: true,
     },
     // authStrategy: new RemoteAuth({
