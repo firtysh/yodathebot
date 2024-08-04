@@ -1,11 +1,21 @@
 require("dotenv").config();
 const { Client, RemoteAuth, LocalAuth } = require("whatsapp-web.js");
+const http = require("node:http");
 
 // Require database
 const { MongoStore } = require("wwebjs-mongo");
 const mongoose = require("mongoose");
 const qrcode = require("qrcode-terminal");
 const { handleMsg } = require("./settings/handler");
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(
+    JSON.stringify({
+      data: "Hello World!",
+    })
+  );
+});
 
 // Load the session data
 mongoose.connect(process.env.MONGODB_URI).then(async () => {
@@ -16,9 +26,9 @@ mongoose.connect(process.env.MONGODB_URI).then(async () => {
   // }
   const client = new Client({
     authStrategy: new LocalAuth({
-        dataPath: "auth"
+      dataPath: "auth",
     }),
-    puppeteer:{
+    puppeteer: {
       // executablePath : '/usr/bin/google-chrome-stable',
       headless: true,
     },
@@ -49,10 +59,10 @@ mongoose.connect(process.env.MONGODB_URI).then(async () => {
     console.log("Remote Session saved");
   });
 
-  client.on("message",async  (message) => {
-    const chat = await message.getChat()
-    if(chat.isGroup) return
-    return await handleMsg(message,chat)
+  client.on("message", async (message) => {
+    const chat = await message.getChat();
+    if (chat.isGroup) return;
+    return await handleMsg(message, chat);
   });
 
   process.on("SIGINT", async (signal) => {
@@ -62,4 +72,5 @@ mongoose.connect(process.env.MONGODB_URI).then(async () => {
     process.exit(0);
   });
   client.initialize();
+  server.listen(process.env.PORT || 3000)
 });
