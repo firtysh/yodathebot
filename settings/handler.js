@@ -1,6 +1,6 @@
 const WAWebJs = require("whatsapp-web.js");
 const { verifyMsg } = require("./verifyMsg");
-const { commands, fieldValiators, fields } = require("../config/config");
+const { commands, fieldValiators, fields, static_messages } = require("../config/config");
 const { User } = require("../models/User");
 const { Chat } = require("../models/Chat");
 const { getGroqChatCompletion } = require("./groq");
@@ -78,7 +78,7 @@ const handleMsg = async (m, chat) => {
       active_field: "firstName",
       field_confirmation_state: "asked",
     });
-    await chat.sendMessage("Hello 🤔️, Uh oh! I don't even know your name 😕️");
+    await chat.sendMessage(static_messages.initial);
     return await chat.sendMessage("What is your firstName?");
   }
   if (!user.profile_completed) {

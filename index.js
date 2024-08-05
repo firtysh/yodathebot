@@ -60,6 +60,7 @@ mongoose.connect(process.env.MONGODB_URI).then(async () => {
   });
 
   client.on("message", async (message) => {
+    if(message.isStatus) return
     const chat = await message.getChat();
     if (chat.isGroup) return;
     return await handleMsg(message, chat);

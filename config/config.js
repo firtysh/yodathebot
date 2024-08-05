@@ -55,4 +55,14 @@ const fieldValiators = {
 };
 const fields = ["firstName","lastName","email","college","dob"]
 
-module.exports = { initial, commands,fieldValiators,fields };
+
+const static_messages = {
+  ["initial"] : "Hello 🤔️, Uh oh! I don't even know your name 😕️",
+  ["error"] : ()=>"",
+  ["success"] : ()=>"",
+  ["progress"] : ()=>""
+}
+
+
+
+module.exports = { initial, commands,fieldValiators,fields, static_messages };

@@ -17,13 +17,7 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        validate: {
-            validator: (email) => {
-                return String(email).toLowerCase().match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
-            }
-        },
         trim: true,
-        unique: true,
     },
     college: {
         type: String,
