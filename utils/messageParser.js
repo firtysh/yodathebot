@@ -1,6 +1,6 @@
 const { initial } = require("../config/config");
 
-const verifyMsg = (msg) => {
+const parseMsg = (msg) => {
   if (msg[0] === initial) {
     msg = msg.split(initial)[1].split(/(?<=^\S+)\s/);
     return { cmd: msg[0].toLowerCase(), msg: msg[1] };
@@ -9,4 +9,4 @@ const verifyMsg = (msg) => {
 };
 
 
-module.exports = {verifyMsg}
+module.exports = {parseMsg}

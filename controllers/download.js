@@ -67,48 +67,94 @@ const download = async ({ m, arg }) => {
   if (!videoCode) return await m.reply("Please provide a valid url");
 
   const info = await getVideoInfo(videoCode);
-  if(info instanceof Error) return m.reply("Can not download this one")
+  if (info instanceof Error) return m.reply("Can not download this one");
   // if(info.filesize > 30,971,520) return m.reply("Filesize too big")
-  const ytDlpProcess = spawn(ytDlpBinaryPath, [
-    "-f",
-    "bestaudio",
-    "--extract-audio",
-    "--audio-format",
-    "mp3",
-    "-o",
-    "-",
-    videoCode,
-  ]);
 
-  await m.reply("Please wait your request is being processed")
+
+  await m.reply("Please wait your request is being processed");
   // const logFileStream = fs.createWriteStream(
   //   path.resolve(__dirname, `../logs/ytdlp/${videoCode}.txt`),
   //   { flags: "a" }
   // );
 
-  const chunks = [];
-
-  ytDlpProcess.stdout.setEncoding("base64");
-  ytDlpProcess.stdout.on("data", (data) => {
-    chunks.push(data);
-  });
 
   // Handle errors from yt-dlp
   // ytDlpProcess.stderr.on("data", (data) => {
-    // logFileStream.write(data);
+  // logFileStream.write(data);
   // });
 
   // Handle yt-dlp process close
   ytDlpProcess.on("close", async (code) => {
     console.log(`yt-dlp process exited with code ${code}`);
-    await m.reply("Process Completed upload starting...")
+    await m.reply("Process Completed upload starting...");
     const media = new MessageMedia(
       "audio/mpeg",
       chunks.join(""),
-      `${info.title}.mp3`,
-      info.filesize
+      `${info.title}.mp3`
     );
     return await m.reply(media, m.from, { sendMediaAsDocument: true });
+  });
+};
+
+const downloadAudioOnly = (url, quality) => {
+  return new Promise((resolve, reject) => {
+    const ytDlpProcess = spawn(ytDlpBinaryPath, [
+      "-f",
+      "bestaudio",
+      "--extract-audio",
+      "--audio-format",
+      "mp3",
+      "-o",
+      "-",
+      videoCode,
+    ]);
+    const chunks = [];
+    ytDlpProcess.stdout.setEncoding("base64");
+    ytDlpProcess.stdout.on("data", (data) => {
+      chunks.push(data);
+    });
+    ytDlpProcess.on("error", (error) => {
+      console.log("ERROR: ", error);
+      reject("Failed to download video");
+    });
+    ytDlpProcess.on("close", async (code) => {
+      console.log(`yt-dlp process exited with code ${code}`);
+      await m.reply("Process Completed upload starting...");
+      resolve(
+        new MessageMedia("audio/mpeg", chunks.join(""), `Your Audio.mp3`)
+      );
+    });
+  });
+};
+
+const downloadVideo = (url, quality) => {
+  return new Promise((resolve, reject) => {
+    const ytDlpProcess = spawn(ytDlpBinaryPath, [
+      "-f",
+      "bestaudio",
+      "--extract-audio",
+      "--audio-format",
+      "mp3",
+      "-o",
+      "-",
+      videoCode,
+    ]);
+    const chunks = [];
+    ytDlpProcess.stdout.setEncoding("base64");
+    ytDlpProcess.stdout.on("data", (data) => {
+      chunks.push(data);
+    });
+    ytDlpProcess.on("error", (error) => {
+      console.log("ERROR: ", error);
+      reject("Failed to download video");
+    });
+    ytDlpProcess.on("close", async (code) => {
+      console.log(`yt-dlp process exited with code ${code}`);
+      await m.reply("Process Completed upload starting...");
+      resolve(
+        new MessageMedia("audio/mpeg", chunks.join(""), `Your Audio.mp3`)
+      );
+    });
   });
 };
 
